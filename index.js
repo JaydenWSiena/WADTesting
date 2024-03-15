@@ -3,7 +3,6 @@
 const express = require("express");
 const app = express();
 
-const PORT = process.env.PORT || 8000;
 
 app.get('/math/circle/:radius', function (req,res) {
     if (!req.params.radius) {
@@ -20,4 +19,43 @@ app.get('/math/circle/:radius', function (req,res) {
         .send({status:"ok",circumference, area});
 });
 
-app.listen(PORT);
+app.get('/math/rectangle/:length/:width', function (req,res) {
+    if (!req.params.length || !req.params.width) {
+        res.type("json")
+            .status(400) // Bad request
+            .send({status:"error",error:"Length and width must be defined."});
+        return;
+    }
+    let length = parseFloat(req.params.length);
+    let width = parseFloat(req.params.width);
+    res.type("json")
+        .status(200) // OK
+        .send({status:"ok"});
+});
+
+app.get('/math/power/:base/:exponent', function (req,res) {
+    if (!req.params.base || !req.params.exponent) {
+        res.type("json")
+            .status(400) // Bad request
+            .send({status:"error",error:"Base and exponent must be defined."});
+        return;
+    }
+    if (req.query && req.query.root && req.query.root == "true") {
+        let base = parseFloat(req.params.base);
+        let exponent = parseFloat(req.params.exponent);
+        res.type("json")
+            .status(200) // OK
+            .send({status:"ok", result: Math.pow(base, (1 / exponent))}); // Takes inverse because that makes it a root
+    } else {
+        let base = parseFloat(req.params.base);
+        let exponent = parseFloat(req.params.exponent);
+        res.type("json")
+            .status(200) // OK
+            .send({status:"ok", result: Math.pow(base, exponent)});
+    }
+});
+
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+    console.log('Server is running on port '+PORT);
+});
