@@ -28,9 +28,11 @@ app.get('/math/rectangle/:length/:width', function (req,res) {
     }
     let length = parseFloat(req.params.length);
     let width = parseFloat(req.params.width);
+    let perimeter = (2*length)+(2*width);
+    let area = length*width;
     res.type("json")
         .status(200) // OK
-        .send({status:"ok"});
+        .send({status:"ok", area, perimeter});
 });
 
 app.get('/math/power/:base/:exponent', function (req,res) {
@@ -45,7 +47,7 @@ app.get('/math/power/:base/:exponent', function (req,res) {
         let exponent = parseFloat(req.params.exponent);
         res.type("json")
             .status(200) // OK
-            .send({status:"ok", result: Math.pow(base, (1 / exponent))}); // Takes inverse because that makes it a root
+            .send({status:"ok", result: Math.pow(base, exponent), root: Math.pow(base, (1 / exponent))}); // Takes inverse because that makes it a root
     } else {
         let base = parseFloat(req.params.base);
         let exponent = parseFloat(req.params.exponent);
